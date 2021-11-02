@@ -1,10 +1,10 @@
-from django.conf.urls import url, include
-from rest_framework import routers
+from django.urls import path
 
 from management import views
 
-router = routers.DefaultRouter()
-router.register(r'vehicles', views.VehicleViewSet)
 urlpatterns = [
-    url(r'^', include(router.urls))
+    path('vehicles/save', views.save),
+    path('vehicles/list', views.list),
+    path('vehicles/update', views.update),
+    path('vehicles/delete/<int:id>', views.delete)
 ]

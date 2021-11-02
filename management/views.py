@@ -53,13 +53,20 @@ def update(request):
     db_vehicle = Vehicle.objects.get(id=vehicle.vid)
     if db_vehicle is not None:
         db_vehicle = VehicleAssembler.data_trasnfer(vehicle, db_vehicle)
-        db_vehicle.update_or_create()
+        delete_vehicle(vehicle)
+        db_vehicle._do_update()
         return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_409_CONFLICT)
 
 
-@api_view(['DELETE'])
-def delete(request, id):
-    print("to delete {}".format(id))
-    employee = Vehicle.objects.get(id=id)
-    employee.delete()
+@api_view(['PUT'])
+def delete(request):
+    vehicle = VehicleAssembler.json_to_dto(request.data)
+    print("to delete {}".format(vehicle.vid))
+    delete_vehicle(vehicle)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def delete_vehicle(vehicle):
+    vehicle_list = Vehicle.objects.get(licensePlate=vehicle.licensePlate)
+    vehicle_list.delete()

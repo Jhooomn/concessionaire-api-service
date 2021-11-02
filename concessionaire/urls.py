@@ -6,5 +6,5 @@ urlpatterns = [
     path('vehicles/save', views.save),
     path('vehicles/list', views.list),
     path('vehicles/update', views.update),
-    path('vehicles/delete/<int:id>', views.delete)
+    path('vehicles/delete', views.delete)
 ]

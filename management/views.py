@@ -19,19 +19,13 @@ class VehicleViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def save(request):
     vehicle = VehicleAssembler.json_to_dto(request.data)
-    print("validate")
     if vehicle is not None:
         try:
-            print("not null")
             vehicle.save()
-            print("it saved")
         except:
-            print("error")
             pass
     else:
-        print("is none")
         return Response([], status=status.HTTP_200_OK)
-    print("will return")
     return Response([], status=status.HTTP_200_OK)
 
 
@@ -50,16 +44,27 @@ def get_all_vehicles(vehicles_response):
 @api_view(['PUT'])
 def update(request):
     vehicle = VehicleAssembler.json_to_dto_update(request.data)
-    db_vehicle = Vehicle.objects.get(id=vehicle.vid)
+    db_vehicle = Vehicle.objects.get(licensePlate=vehicle.licensePlate)
     if db_vehicle is not None:
         db_vehicle = VehicleAssembler.data_trasnfer(vehicle, db_vehicle)
-        db_vehicle.update_or_create()
+        delete_vehicle(vehicle)
+        db_vehicle.save()
         return Response(status=status.HTTP_200_OK)
     return Response(status=status.HTTP_409_CONFLICT)
 
 
-@api_view(['DELETE'])
-def delete(request, id):
-    print("to delete {}".format(id))
-    employee = Vehicle.objects.get(id=id)
-    employee.delete()
+@api_view(['PUT'])
+def delete(request):
+    vehicle = VehicleAssembler.json_to_dto(request.data)
+    delete_vehicle(vehicle)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def delete_vehicle(vehicle):
+    vehicles_response = []
+    get_all_vehicles(vehicles_response)
+    for db_v in vehicles_response:
+        if vehicle.vid == db_v["vid"]:
+            vehicle = VehicleAssembler.json_to_dto_update(db_v)
+            vehicle.delete()
+            break

@@ -19,7 +19,6 @@ class VehicleAssembler:
     @staticmethod
     def json_to_dto(json_string):
         json_model = VehicleAssembler.get_json(json_string)
-        print(json_model)
         if json_model:
             vehicle = Vehicle()
             vehicle.vid = randrange(1000)
@@ -30,8 +29,6 @@ class VehicleAssembler:
             vehicle.licensePlate = json_string["licensePlate"]
             vehicle.km = json_string["km"]
             vehicle.imgLink = json_string["imgLink"]
-            print(str(vehicle.vid) + vehicle.type + vehicle.brand + vehicle.model + vehicle.version
-                  + vehicle.licensePlate + vehicle.km + vehicle.imgLink)
             return vehicle
         else:
             return None
@@ -39,10 +36,9 @@ class VehicleAssembler:
     @staticmethod
     def json_to_dto_update(json_string):
         json_model = VehicleAssembler.get_json(json_string)
-        print(json_model)
         if json_model:
             vehicle = Vehicle()
-            vehicle.vid = json_string["vid"]
+            vehicle.vid = int(json_string["vid"])
             vehicle.type = json_string["type"]
             vehicle.brand = json_string["brand"]
             vehicle.model = json_string["model"]
@@ -58,6 +54,7 @@ class VehicleAssembler:
 
     @staticmethod
     def data_trasnfer(vehicle_from_, vehicle_to_):
+        vehicle_to_.vid = vehicle_from_.vid
         vehicle_to_.type = vehicle_from_.type
         vehicle_to_.brand = vehicle_from_.brand
         vehicle_to_.model = vehicle_from_.model
